@@ -1,0 +1,43 @@
+---
+- name: CoreUi playbook
+  hosts: testserver
+  become: yes
+  
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Copy Nginx configuration
+      copy:
+        src: /home/ansible/nginx.conf
+        dest: /etc/nginx/nginx.conf
+
+    - name: Start Nginx
+      service:
+        name: nginx
+        state: started
+
+    - name: Install Node.js
+      apt:
+        name: nodejs
+        state: present
+
+    - name: Install npm
+      apt:
+        name: npm
+        state: present
+
+    - name: Install pm2
+      npm:
+        name: pm2
+        global: yes
+
+    - name: Copy CoreUi files
+      copy:
+        src: /home/ansible/coreui
+        dest: /var/www/html
+        
+    - name: Start CoreUi
+      command: pm2 start /var/www/html/serve.js
