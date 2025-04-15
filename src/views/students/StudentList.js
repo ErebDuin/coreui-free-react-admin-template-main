@@ -30,7 +30,7 @@ const StudentList = () => {
     const [studentToDelete, setStudentToDelete] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
+    const [hasMoreData, setHasMoreData] = useState(true);
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
 
@@ -45,7 +45,7 @@ const StudentList = () => {
             $("#CCard").LoadingOverlay("show", { scale: 0.2 });
 
             try {
-                const response = await fetch(`http://localhost:8084/students?page=${page}`, {
+                const response = await fetch(`http://localhost:8080/students?page=${page}`, {
                     method: "GET",
                     headers: {
                         'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ const StudentList = () => {
 
                 const data = await response.json();
                 setStudents(data);
-                setTotalPages(data.totalPages);
+                setHasMoreData(data.students.length > 0);
             } catch (error) {
                 console.error("Error fetching students", error);
             } finally {
@@ -112,8 +112,8 @@ const StudentList = () => {
     };
 
     const handleNextPage = () => {
-        if (page < totalPages - 1) {
-          setPage(page + 1);
+        if (hasMoreData) {
+            setPage(page + 1);
         }
     };
 
@@ -168,10 +168,23 @@ const StudentList = () => {
                                 </CTableBody>
                             </CTable>
                             <div className="d-flex justify-content-between">
-                            <CButton type="button" color="info" onClick={handlePreviousPage} disabled={page === 0}>
+                            <CButton
+                                type="button"
+                                color="info"
+                                onClick={handlePreviousPage}
+                                disabled={page === 0}
+                                >
                                     Previous Page
                                 </CButton>
-                                <CButton type="button" color="info" onClick={handleNextPage} disabled={page === totalPages - 1}>
+                                <span>
+                                    {/* Page {page + 1} of {totalPages > 0 ? totalPages : 1} */}
+                                </span>
+                                <CButton
+                                    type="button"
+                                    color="info"
+                                    onClick={handleNextPage}
+                                    disabled={!hasMoreData}
+                                    >
                                     Next Page
                                 </CButton>
                             </div>
