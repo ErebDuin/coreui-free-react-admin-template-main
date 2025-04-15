@@ -27,7 +27,7 @@ const Login = () => {
     setError('')
 
     try {
-      const response = await fetch('http://localhost:8084/authenticate', {
+      const response = await fetch('http://localhost:8080/authenticate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
