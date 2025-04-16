@@ -72,7 +72,7 @@ import {
   
       try {
         const token = localStorage.getItem('token')
-        const response = await fetch('http://localhost:8084/students', {
+        const response = await fetch('http://localhost:8080/students', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
